@@ -1,6 +1,6 @@
 // Remplace par l'URL de ton backend une fois déployé (voir /server).
 // En dev local avec Expo Go, utilise l'IP locale de ton ordinateur, pas "localhost".
-const BACKEND_URL = "https://TON-BACKEND.exemple.com/analyze";
+const BACKEND_URL = "https://glowscan-server-59-2026-0605.onrender.com/analyze";
 
 export async function analyzeFace(base64Image, mimeType = "image/jpeg") {
   const controller = new AbortController();
