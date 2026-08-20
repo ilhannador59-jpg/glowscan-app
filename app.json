@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "GlowScan",
+    "slug": "glowscan",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "backgroundColor": "#0F0E11"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.tonpseudo.glowscan",
+      "infoPlist": {
+        "NSCameraUsageDescription": "GlowScan a besoin de l'appareil photo pour analyser ton visage."
+      }
+    },
+    "android": {
+      "package": "com.tonpseudo.glowscan",
+      "permissions": ["CAMERA"]
+    }
+  }
+}
