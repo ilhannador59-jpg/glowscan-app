@@ -14,7 +14,9 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
-
+app.get("/", (req, res) => {
+  res.send("GlowScan API fonctionne !");
+});
 const ANALYSIS_PROMPT = `Tu es un outil d'analyse skincare bienveillant dans une appli mobile grand public. Analyse cette photo de visage et réponds UNIQUEMENT avec un objet JSON valide, sans texte avant ni après, sans balises markdown, au format exact suivant:
 {
   "score": <entier 0-100, score glow général>,
