@@ -17,22 +17,30 @@ app.use(express.json({ limit: "10mb" }));
 app.get("/", (req, res) => {
   res.send("GlowScan API fonctionne !");
 });
-const ANALYSIS_PROMPT = `Tu es un outil d'analyse skincare bienveillant dans une appli mobile grand public. Analyse cette photo de visage et réponds UNIQUEMENT avec un objet JSON valide, sans texte avant ni après, sans balises markdown, au format exact suivant:
+const ANALYSIS_PROMPT = `
+Tu es un outil d'analyse skincare bienveillant dans une application mobile grand public.
+Analyse cette photo de visage et retourne UNIQUEMENT un JSON valide, sans texte autour.
+
 {
-  "score": <entier 0-100, score glow général>,
+  "score": 0,
   "metrics": [
-    {"label": "Hydratation", "value": <0-100>},
-    {"label": "Éclat", "value": <0-100>},
-    {"label": "Texture", "value": <0-100>},
-    {"label": "Symétrie", "value": <0-100>}
+    {"label": "Hydratation", "value": 0},
+    {"label": "Éclat", "value": 0},
+    {"label": "Texture", "value": 0},
+    {"label": "Symétrie", "value": 0}
   ],
-  "constat": "<2 phrases courtes, ton bienveillant et positif, en français>",
+  "constat": "Deux phrases courtes, ton bienveillant et positif, en français.",
   "routine": [
-    {"time": "Matin", "step": "<étape courte>"},
-    {"time": "Matin", "step": "<étape courte>"},
-    {"time": "Soir", "step": "<étape courte>"},
-    {"time": "Soir", "step": "<étape courte>"}
+    {"time": "Matin", "step": "Étape courte"},
+    {"time": "Matin", "step": "Étape courte"},
+    {"time": "Soir", "step": "Étape courte"},
+    {"time": "Soir", "step": "Étape courte"}
   ]
+}
+
+Reste toujours positif et encourageant, jamais critique ou anxiogène.
+Si le visage n'est pas clairement visible, mets score à 0 et explique-le dans constat.
+`;
 }
 Reste toujours positif et encourageant, jamais critique ou anxiogène. Si le visage n'est pas clairement visible, mets score à 0 et explique dans "constat".`;
 
@@ -68,9 +76,10 @@ app.post("/analyze", async (req, res) => {
     }
   );
 
-  if (!response.ok) {
+   if (!response.ok) {
     const errText = await response.text();
     console.error("Erreur Gemini :", errText);
+
     return res.status(502).json({
       error: "Échec de l'analyse"
     });
@@ -81,7 +90,7 @@ app.post("/analyze", async (req, res) => {
   const text =
     data.candidates?.[0]?.content?.parts
       ?.map((p) => p.text || "")
-      .join("") || "";
+      .join("\n") || "";
 
   const match = text.match(/\{[\s\S]*\}/);
   const clean = match ? match[0] : text;
@@ -92,10 +101,14 @@ app.post("/analyze", async (req, res) => {
 
 } catch (err) {
   console.error(err);
+
   res.status(500).json({
     error: "Erreur serveur"
   });
 }
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`GlowScan backend en écoute sur le port ${PORT}`));
+
+app.listen(PORT, () => {
+  console.log(`GlowScan backend en écoute sur le port ${PORT}`);
+});
